@@ -5,6 +5,9 @@ This is a demo of the mitosheet library. It is a simple streamlit app that allow
 import streamlit as st
 import pandas as pd
 from mitosheet.streamlit.v1 import spreadsheet
+import analytics
+
+analytics.write_key = '6I7ptc5wcIGC4WZ0N1t0NXvvAbjRGUgX'
 
 st.set_page_config(layout="wide")
 st.title("Data Cleaning Verification")
@@ -65,6 +68,20 @@ def run_data_checks_and_display_prompts(df):
             st.error(error_message + " " + help)
             return False
     return True
+
+# If the user has not submitted the form yet and an analytics key is set, display the email form
+with st.form("email_form"):
+    st.write("To be the first to learn about new features, coming changes, and advanced functionality, signup for the Mito for Streamlit email list.")
+    email = st.text_input("Email")    
+    submitted = st.form_submit_button("Sign Up")
+
+    if submitted:
+        # Send the email to segment
+        analytics.identify(email, {'location': 'streamlit_data_cleaning_verification_demo'})
+
+        # Store that the form has been submitted so we don't display it again
+        st.success("Thanks for signing up! We'll keep you updated on new features.")
+
 
 @st.cache_data
 def convert_df(df):
