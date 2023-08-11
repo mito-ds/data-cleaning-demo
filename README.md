@@ -17,7 +17,7 @@ This app could be used in the first step of a data engineering pipeline. It allo
 In this app, only if the user has fixed all of the issues in their data, will they be able to export the data to a csv file. You could update this app to export the data to a database instead.
 
 ### Mito Streamlit Package 
-TODO: Link to docs
+Learn more about the Mito Streamlit package [here](https://docs.trymito.io/mito-for-streamlit/getting-started) or following the [getting started guide](https://docs.trymito.io/mito-for-streamlit/create-an-app).
 
 ### Run Locally 
 1. Create a virtual environment:
