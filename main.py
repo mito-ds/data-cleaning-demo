@@ -5,6 +5,10 @@ This is a demo of the mitosheet library. It is a simple streamlit app that allow
 import streamlit as st
 import pandas as pd
 from mitosheet.streamlit.v1 import spreadsheet
+import analytics
+
+WRITE_KEY = '6I7ptc5wcIGC4WZ0N1t0NXvvAbjRGUgX' 
+analytics.write_key = WRITE_KEY
 
 st.set_page_config(layout="wide")
 st.title("Data Cleaning Verification")
@@ -65,6 +69,23 @@ def run_data_checks_and_display_prompts(df):
             st.error(error_message + " " + help)
             return False
     return True
+
+# Session State also supports attribute based syntax
+if 'form_submitted' not in st.session_state:
+    st.session_state['form_submitted'] = False
+
+if not st.session_state['form_submitted']:
+    with st.form("email_form"):
+        st.write("Stay up to date with new Mito for Streamlit features by signing up for receive product updates.")
+        email = st.text_input("Email")
+
+        # Every form must have a submit button.
+        
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+            analytics.identify(email, {'location': 'streamlit_data_cleaning_verification_demo'})
+            st.session_state['form_submitted'] = True
+
 
 @st.cache_data
 def convert_df(df):
