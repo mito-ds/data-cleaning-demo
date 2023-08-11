@@ -7,9 +7,7 @@ import pandas as pd
 from mitosheet.streamlit.v1 import spreadsheet
 import analytics
 
-# If there is a Segment key in the secrets.toml file use it. Otherwise, we don't display the email form.
-segment_write_key = st.secrets['segment_write_key'] if 'segment_write_key' in st.secrets else None
-analytics.write_key = segment_write_key
+analytics.write_key = '6I7ptc5wcIGC4WZ0N1t0NXvvAbjRGUgX'
 
 st.set_page_config(layout="wide")
 st.title("Data Cleaning Verification")
@@ -71,25 +69,18 @@ def run_data_checks_and_display_prompts(df):
             return False
     return True
 
-# Store that the form has not been submitted yet so we know to display the email form
-if 'form_submitted' not in st.session_state:
-    st.session_state['form_submitted'] = False
-
 # If the user has not submitted the form yet and an analytics key is set, display the email form
-if not st.session_state['form_submitted'] and segment_write_key is not None:
-    with st.form("email_form"):
-        st.write("Stay up to date with new Mito for Streamlit features by signing up for receive product updates.")
-        email = st.text_input("Email")
+with st.form("email_form"):
+    st.write("To be the first to learn about new features, coming changes, and advanced functionality, signup for the Mito for Streamlit email list.")
+    email = st.text_input("Email")    
+    submitted = st.form_submit_button("Sign Up")
 
-        # Every form must have a submit button.
-        
-        submitted = st.form_submit_button("Submit")
-        if submitted:
-            # Send the email to segment
-            analytics.identify(email, {'location': 'streamlit_data_cleaning_verification_demo'})
+    if submitted:
+        # Send the email to segment
+        analytics.identify(email, {'location': 'streamlit_data_cleaning_verification_demo'})
 
-            # Store that the form has been submitted so we don't display it again
-            st.session_state['form_submitted'] = True
+        # Store that the form has been submitted so we don't display it again
+        st.success("Thanks for signing up! We'll keep you updated on new features.")
 
 
 @st.cache_data
