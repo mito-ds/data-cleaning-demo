@@ -1,5 +1,7 @@
 # Data Cleanliness Verification
 
+**Try the deployed app [here]([url](https://mito-data-cleaning-demo.streamlit.app))**
+
 This Streamlit App allows you to import data, and clean it using the mitosheet library. The app is preconfigured with a set of data checks and prompts you to fix up specific issues in the data.
 
 It ensures the your data has the following properties:
