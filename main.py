@@ -7,8 +7,9 @@ import pandas as pd
 from mitosheet.streamlit.v1 import spreadsheet
 import analytics
 
-WRITE_KEY = '6I7ptc5wcIGC4WZ0N1t0NXvvAbjRGUgX' 
-analytics.write_key = WRITE_KEY
+# If there is a Segment key in the secrets.toml file use it. Otherwise, we don't display the email form.
+segment_write_key = st.secrets['segment_write_key'] if 'segment_write_key' in st.secrets else None
+analytics.write_key = segment_write_key
 
 st.set_page_config(layout="wide")
 st.title("Data Cleaning Verification")
@@ -70,11 +71,12 @@ def run_data_checks_and_display_prompts(df):
             return False
     return True
 
-# Session State also supports attribute based syntax
+# Store that the form has not been submitted yet so we know to display the email form
 if 'form_submitted' not in st.session_state:
     st.session_state['form_submitted'] = False
 
-if not st.session_state['form_submitted']:
+# If the user has not submitted the form yet and an analytics key is set, display the email form
+if not st.session_state['form_submitted'] and segment_write_key is not None:
     with st.form("email_form"):
         st.write("Stay up to date with new Mito for Streamlit features by signing up for receive product updates.")
         email = st.text_input("Email")
@@ -83,7 +85,10 @@ if not st.session_state['form_submitted']:
         
         submitted = st.form_submit_button("Submit")
         if submitted:
+            # Send the email to segment
             analytics.identify(email, {'location': 'streamlit_data_cleaning_verification_demo'})
+
+            # Store that the form has been submitted so we don't display it again
             st.session_state['form_submitted'] = True
 
 
